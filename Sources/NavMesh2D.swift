@@ -28,6 +28,7 @@ public struct WayPoint {
 }
 
 /// 导航网格
+/// 三角形的三个顶点顺序必须是顺时针
 public class NavMesh2D {
     /// 三角形列表
     var triangles = [NavTriangle](repeating: NavTriangle(), count: 1000)
@@ -74,10 +75,10 @@ public class NavMesh2D {
         try findTrianglePath(startPos: startPos, endPos: endPos, path: &navPath, offset: offset)
         // 保证从起点到终点的顺序
         navPath.reverse()
-        for tri in navPath {
-            print("path tri:", tri.id)
-        }
-        //try createWayPoints(startPos: startPos, endPos: endPos, navPath: navPath, offset: offset, wayPath: &path)
+        //for tri in navPath {
+        //    print("path tri:", tri.id)
+        //}
+        try createWayPoints(startPos: startPos, endPos: endPos, navPath: navPath, offset: offset, wayPath: &path)
     }
     
     /// 寻路路径三角形
@@ -207,6 +208,7 @@ public class NavMesh2D {
             if i != (navPath.count - 1) {
                 let nextTri = navPath[i + 1]
                 tri.outWallIndex = tri.getWallIndex(neighborId: nextTri.id)
+                //print("tri out wall index,", tri.id, tri.outWallIndex)
             }
         }
         
@@ -262,12 +264,12 @@ public class NavMesh2D {
         var testPntB = Vector2D()
         for i in startIndex + 1 ..< navPath.count {
             curTri = navPath[i]
-            outSide = curTri.getSide(index: curTri.outWallIndex)!
+            
             if i == navPath.count - 1 {
                 testPntA = endPos.point
                 testPntB = endPos.point
-            }
-            else {
+            } else {
+                outSide = curTri.getSide(index: curTri.outWallIndex)!
                 testPntA = outSide.start
                 testPntB = outSide.end
             }

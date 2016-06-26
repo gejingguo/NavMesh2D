@@ -36,6 +36,11 @@ public class NavMesh2D {
     public init() {
     }
     
+    /// 从Json文件加载 
+    public func load(from: String) throws {
+        //JSONSerialization.jsonObject(with: <#T##Data#>, options: <#T##JSONSerialization.ReadingOptions#>)
+    }
+    
     /// 重置导航数据
     public func resetData() {
         for tri in self.triangles {
@@ -67,6 +72,20 @@ public class NavMesh2D {
     public func findPath(startPos: WayPoint, endPos: WayPoint, path: inout [WayPoint], offset: Double = 0.0) throws {
         if triangles.isEmpty {
             throw NavError.NoMeshData
+        }
+        
+        // 检查起点，终点有效性
+        guard let startTri = getTriangle(id: startPos.triangleId) else {
+            throw NavError.NoStartOrEndTri
+        }
+        if !startTri.contains(point: startPos.point) {
+            throw NavError.NoStartOrEndTri
+        }
+        guard let endTri = getTriangle(id: endPos.triangleId) else {
+            throw NavError.NoStartOrEndTri
+        }
+        if !endTri.contains(point: endPos.point) {
+            throw NavError.NoStartOrEndTri
         }
         
         resetData()

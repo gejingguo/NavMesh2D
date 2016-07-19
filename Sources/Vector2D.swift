@@ -110,3 +110,7 @@ public func != (left: Vector2D, right: Vector2D) -> Bool {
     return !(left == right)
 }
 
+public func * (left: Vector2D, d: Double) -> Vector2D {
+    return Vector2D(x: left.x * d, y: left.y * d)
+}
+
